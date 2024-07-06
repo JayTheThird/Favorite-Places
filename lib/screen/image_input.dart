@@ -15,7 +15,8 @@ class _ImageInputState extends State<ImageInput> {
       width: double.infinity,
       alignment: Alignment.center,
       decoration: BoxDecoration(
-        border: Border.all(width: 0.5),
+        border: Border.all(width: 0.8),
+        borderRadius: BorderRadius.circular(4),
       ),
       child: TextButton.icon(
         onPressed: () {},
