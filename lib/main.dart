@@ -1,4 +1,4 @@
-import 'package:favorite_places/riverpod/user_places_bloc.dart';
+import 'package:favorite_places/cubit/userplace_cubit.dart';
 import 'package:favorite_places/screen/places.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

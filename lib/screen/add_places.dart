@@ -1,5 +1,8 @@
-import 'package:favorite_places/riverpod/user_places_bloc.dart';
+import 'dart:io';
+
+import 'package:favorite_places/cubit/userplace_cubit.dart';
 import 'package:favorite_places/screen/image_input.dart';
+import 'package:favorite_places/screen/location_input.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
@@ -14,6 +17,7 @@ class AddPlaces extends StatefulWidget {
 class _AddPlacesState extends State<AddPlaces> {
   final _addPlaces = TextEditingController();
   final formKey = GlobalKey<FormState>();
+  File? _selectedImage;
 
   @override
   Widget build(BuildContext context) {
@@ -52,14 +56,20 @@ class _AddPlacesState extends State<AddPlaces> {
                   },
                 ),
                 const Gap(10),
-                const ImageInput(),
+                ImageInput(
+                  onTakeImage: (image) {
+                    _selectedImage = image;
+                  },
+                ),
+                const Gap(10),
+                const LocationInput(),
                 const Gap(10),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     TextButton.icon(
                       onPressed: () {
-                        placeBLoc.addPlace(_addPlaces.text);
+                        placeBLoc.addPlace(_addPlaces.text, _selectedImage!);
                         Navigator.of(context).pop();
                       },
                       icon: const Icon(Icons.add),
