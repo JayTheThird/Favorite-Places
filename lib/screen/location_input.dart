@@ -61,6 +61,9 @@ class _LocationInputState extends State<LocationInput> {
 
     final address = resData["results"][0]["formatted_address"];
     print(address);
+    print(lat);
+    print(lng);
+
     setState(() {
       _pickedLocation = PlaceLocation(
         latitude: lat,
@@ -71,26 +74,49 @@ class _LocationInputState extends State<LocationInput> {
     });
   }
 
+  String get locationImage {
+    final lat = _pickedLocation!.latitude;
+    final lag = _pickedLocation!.longitude;
+    final url =
+        'https://apis.mapmyindia.com/advancedmaps/v1/2b9fc1ff5d230f67dbb9769452258361/still_image?center=$lat,$lag&zoom=17&size=600x300&ssf=1&markers=$lat,$lag';
+    print(url);
+    return url;
+  }
+
+  getData() {
+    if (_isCurrentLocation) {
+      return LoadingAnimationWidget.prograssiveDots(
+        color: Colors.purple,
+        size: 40,
+      );
+    } else {
+      return Text(
+        "No Location",
+        style: Theme.of(context).textTheme.titleLarge,
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
         Container(
-          height: 160,
+          height: 180,
           width: double.infinity,
           alignment: Alignment.center,
           decoration: BoxDecoration(
             border: Border.all(width: 0.8),
             borderRadius: BorderRadius.circular(4),
           ),
-          child: _isCurrentLocation
-              ? LoadingAnimationWidget.prograssiveDots(
-                  color: Colors.purple,
-                  size: 40,
-                )
-              : Text(
-                  "No Location",
-                  style: Theme.of(context).textTheme.titleLarge,
+          clipBehavior: Clip.hardEdge,
+          child: _pickedLocation == null
+              ? getData()
+              : Image.network(
+                  locationImage,
+                  fit: BoxFit.cover,
+                  height: double.infinity,
+                  width: double.infinity,
                 ),
         ),
         Row(
