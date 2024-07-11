@@ -1,6 +1,11 @@
+import 'dart:convert';
+
+import 'package:favorite_places/model/location_model.dart';
 import 'package:flutter/material.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+
 import 'package:location/location.dart';
+import 'package:http/http.dart' as http;
 
 class LocationInput extends StatefulWidget {
   const LocationInput({super.key});
@@ -11,9 +16,10 @@ class LocationInput extends StatefulWidget {
 
 class _LocationInputState extends State<LocationInput> {
   bool _isCurrentLocation = false;
+  PlaceLocation? _pickedLocation;
 
   void getCurrentLocation() async {
-    Location location = new Location();
+    final location = Location();
 
     bool serviceEnabled;
     PermissionStatus permissionGranted;
@@ -41,13 +47,28 @@ class _LocationInputState extends State<LocationInput> {
 
     locationData = await location.getLocation();
 
+    final lat = locationData.latitude;
+    final lng = locationData.longitude;
+
+    if (lng == null || lat == null) return;
+
+    final url = Uri.parse(
+      "https://apis.mapmyindia.com/advancedmaps/v1/2b9fc1ff5d230f67dbb9769452258361/rev_geocode?lat=$lat&lng=$lng",
+    );
+
+    final response = await http.get(url);
+    final resData = json.decode(response.body);
+
+    final address = resData["results"][0]["formatted_address"];
+    print(address);
     setState(() {
+      _pickedLocation = PlaceLocation(
+        latitude: lat,
+        longitude: lng,
+        address: address,
+      );
       _isCurrentLocation = false;
     });
-
-    print(locationData.altitude);
-    print(locationData.latitude);
-    print(locationData.accuracy);
   }
 
   @override
