@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:favorite_places/cubit/userplace_cubit.dart';
+import 'package:favorite_places/model/location_model.dart';
 import 'package:favorite_places/screen/image_input.dart';
 import 'package:favorite_places/screen/location_input.dart';
 import 'package:flutter/material.dart';
@@ -18,6 +19,7 @@ class _AddPlacesState extends State<AddPlaces> {
   final _addPlaces = TextEditingController();
   final formKey = GlobalKey<FormState>();
   File? _selectedImage;
+  PlaceLocation? _selectedLocation;
 
   @override
   Widget build(BuildContext context) {
@@ -62,14 +64,22 @@ class _AddPlacesState extends State<AddPlaces> {
                   },
                 ),
                 const Gap(10),
-                const LocationInput(),
+                LocationInput(
+                  onSelectedLocation: (location) {
+                    _selectedLocation = location;
+                  },
+                ),
                 const Gap(10),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     TextButton.icon(
                       onPressed: () {
-                        placeBLoc.addPlace(_addPlaces.text, _selectedImage!);
+                        placeBLoc.addPlace(
+                          _addPlaces.text,
+                          _selectedImage!,
+                          _selectedLocation!,
+                        );
                         Navigator.of(context).pop();
                       },
                       icon: const Icon(Icons.add),

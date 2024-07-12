@@ -26,6 +26,7 @@ class PlacesScreen extends StatelessWidget {
       ),
       body: BlocBuilder<UserPlacesBloc, List<Place>>(
         builder: (context, place) {
+          
           return PlacesList(places: place);
         },
       ),

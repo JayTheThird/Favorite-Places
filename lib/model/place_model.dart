@@ -1,5 +1,5 @@
 import 'dart:io';
-// import 'package:favorite_places/model/location_model.dart';
+import 'package:favorite_places/model/location_model.dart';
 import 'package:uuid/uuid.dart';
 
 
@@ -11,11 +11,11 @@ class Place {
   final String id;
   final String place;
   final File image;
-  // final PlaceLocation location;
+  final PlaceLocation location;
 
   Place({
     required this.place,
     required this.image,
-    // required this.location,
+    required this.location,
   }) : id = uuid.v4();
 }
