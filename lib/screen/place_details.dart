@@ -1,4 +1,5 @@
 import 'package:favorite_places/model/place_model.dart';
+import 'package:favorite_places/screen/map.dart';
 import 'package:flutter/material.dart';
 
 class PlaceDetails extends StatelessWidget {
@@ -41,16 +42,28 @@ class PlaceDetails extends StatelessWidget {
               SafeArea(
                 child: Stack(
                   children: [
-                    Container(
-                      height: 320,
-                      width: double.infinity,
-                      alignment: Alignment.center,
-                      // clipBehavior: Clip.hardEdge,
-                      child: Image.network(
-                        locationImage,
-                        fit: BoxFit.cover,
-                        height: double.infinity,
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (ctx) => MapScreen(
+                              location: place.location,
+                              isLocationPicked: false,
+                            ),
+                          ),
+                        );
+                      },
+                      child: Container(
+                        height: 320,
                         width: double.infinity,
+                        alignment: Alignment.center,
+                        // clipBehavior: Clip.hardEdge,
+                        child: Image.network(
+                          locationImage,
+                          fit: BoxFit.cover,
+                          height: double.infinity,
+                          width: double.infinity,
+                        ),
                       ),
                     ),
                     Positioned(

@@ -1,11 +1,13 @@
 import 'dart:convert';
 
 import 'package:favorite_places/model/location_model.dart';
+import 'package:favorite_places/screen/map.dart';
 import 'package:flutter/material.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 import 'package:location/location.dart';
 import 'package:http/http.dart' as http;
+import 'package:mappls_gl/mappls_gl.dart';
 
 class LocationInput extends StatefulWidget {
   const LocationInput({
@@ -23,7 +25,32 @@ class _LocationInputState extends State<LocationInput> {
   bool _isCurrentLocation = false;
   PlaceLocation? _pickedLocation;
 
-  void getCurrentLocation() async {
+  Future getLocation(double lat, double lng) async {
+    final url = Uri.parse(
+      "https://apis.mapmyindia.com/advancedmaps/v1/2b9fc1ff5d230f67dbb9769452258361/rev_geocode?lat=$lat&lng=$lng",
+    );
+
+    final response = await http.get(url);
+    final resData = json.decode(response.body);
+
+    final address = resData["results"][0]["formatted_address"];
+    print(address);
+    print(lat);
+    print(lng);
+
+    setState(() {
+      _pickedLocation = PlaceLocation(
+        latitude: lat,
+        longitude: lng,
+        address: address,
+      );
+      _isCurrentLocation = false;
+    });
+
+    widget.onSelectedLocation(_pickedLocation!);
+  }
+
+  void _getCurrentLocation() async {
     final location = Location();
 
     bool serviceEnabled;
@@ -57,28 +84,7 @@ class _LocationInputState extends State<LocationInput> {
 
     if (lng == null || lat == null) return;
 
-    final url = Uri.parse(
-      "https://apis.mapmyindia.com/advancedmaps/v1/2b9fc1ff5d230f67dbb9769452258361/rev_geocode?lat=$lat&lng=$lng",
-    );
-
-    final response = await http.get(url);
-    final resData = json.decode(response.body);
-
-    final address = resData["results"][0]["formatted_address"];
-    print(address);
-    print(lat);
-    print(lng);
-
-    setState(() {
-      _pickedLocation = PlaceLocation(
-        latitude: lat,
-        longitude: lng,
-        address: address,
-      );
-      _isCurrentLocation = false;
-    });
-
-    widget.onSelectedLocation(_pickedLocation!);
+    getLocation(lat, lng);
   }
 
   String get locationImage {
@@ -88,6 +94,18 @@ class _LocationInputState extends State<LocationInput> {
         'https://apis.mapmyindia.com/advancedmaps/v1/2b9fc1ff5d230f67dbb9769452258361/still_image?center=$lat,$lag&zoom=17&size=600x300&ssf=1&markers=$lat,$lag';
     print(url);
     return url;
+  }
+
+  void _selectOnMap() async {
+    final pickedLocation = await Navigator.of(context).push<LatLng>(
+      MaterialPageRoute(
+        builder: (ctx) => const MapScreen(),
+      ),
+    );
+
+    if (pickedLocation == null) return;
+
+    getLocation(pickedLocation.latitude, pickedLocation.longitude);
   }
 
   getData() {
@@ -130,12 +148,12 @@ class _LocationInputState extends State<LocationInput> {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             TextButton.icon(
-              onPressed: getCurrentLocation,
+              onPressed: _getCurrentLocation,
               label: const Text("Get Current Location"),
               icon: const Icon(Icons.location_on),
             ),
             TextButton.icon(
-              onPressed: () {},
+              onPressed: _selectOnMap,
               label: const Text("Select On Map"),
               icon: const Icon(Icons.map),
             ),

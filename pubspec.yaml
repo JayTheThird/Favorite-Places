@@ -43,7 +43,7 @@ dependencies:
   location: ^7.0.0
   loading_animation_widget: ^1.2.1
   http: ^1.2.1
-  mapmyindia_gl: ^0.3.2
+  mappls_gl: ^1.0.2
 
 dev_dependencies:
   flutter_test:
