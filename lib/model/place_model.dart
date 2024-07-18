@@ -2,9 +2,6 @@ import 'dart:io';
 import 'package:favorite_places/model/location_model.dart';
 import 'package:uuid/uuid.dart';
 
-
-
-
 const uuid = Uuid();
 
 class Place {
@@ -17,5 +14,6 @@ class Place {
     required this.place,
     required this.image,
     required this.location,
-  }) : id = uuid.v4();
+    String? id,
+  }) : id = id ?? uuid.v4();
 }
